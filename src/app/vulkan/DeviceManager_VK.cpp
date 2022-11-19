@@ -47,6 +47,8 @@ freely, subject to the following restrictions:
    distribution.
 */
 
+#define VK_USE_PLATFORM_WIN32_KHR
+
 #include <string>
 #include <queue>
 #include <unordered_set>
