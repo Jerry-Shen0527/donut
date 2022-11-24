@@ -175,6 +175,7 @@ namespace donut::app
         }
 
     protected:
+    public:
         bool m_windowVisible = false;
 
         DeviceCreationParameters m_DeviceParams;
