@@ -82,7 +82,6 @@ nvrhi::BindingSetHandle BindingCache::GetOrCreateBindingSet(const nvrhi::Binding
     if (result)
     {
         assert(result->getDesc());
-        assert(*result->getDesc() == desc);
     }
 
     return result;
