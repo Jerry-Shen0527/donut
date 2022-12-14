@@ -200,6 +200,19 @@ float3 ImportanceSampleGGX(float2 random, float roughness)
     return H;
 }
 
+// Assuming N = (0, 0, 1), H in tangent space.
+float ImportanceSampleGGX_PDF(float roughness, float3 H)
+{
+    float3 N = float3(0, 0, 1);
+    float NoH = saturate(dot(N, H));
+    float alpha = max(0.01, square(roughness));
+
+    //float alpha = square(roughness);
+    float D = square(alpha) / (M_PI * square(square(NoH) * square(alpha) + (1 - square(NoH))));
+
+    return D;
+}
+
 // Returns the sampled H vector in tangent space, assuming N = (0, 0, 1).
 // Ve is in the same tangent space.
 float3 ImportanceSampleGGX_VNDF(float2 random, float roughness, float3 Ve, float ndf_trim)

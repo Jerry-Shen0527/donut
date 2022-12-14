@@ -47,7 +47,7 @@ static nvrhi::TextureHandle createNullTexture(nvrhi::DeviceHandle device)
     nvrhi::TextureDesc desc;
     desc.width = 1;
     desc.height = 1;
-    desc.isRenderTarget = false;
+    desc.isRenderTarget = true;
     desc.useClearValue = false;
     desc.sampleCount = 1;
     desc.dimension = nvrhi::TextureDimension::Texture2D;
@@ -55,6 +55,7 @@ static nvrhi::TextureHandle createNullTexture(nvrhi::DeviceHandle device)
     desc.arraySize = 1;
     desc.isUAV = true;
     desc.format = nvrhi::Format::RGBA8_UNORM;
+    desc.initialState = nvrhi::ResourceStates::RenderTarget;
 
     return device->createTexture(desc);
 }
@@ -110,6 +111,7 @@ MipMapGenPass::MipMapGenPass(
     constantBufferDesc.byteSize = sizeof(MipmmapGenConstants);
     constantBufferDesc.isConstantBuffer = true;
     constantBufferDesc.isVolatile = true;
+    constantBufferDesc.maxVersions = donut::engine::c_MaxRenderPassConstantBufferVersions;
     constantBufferDesc.debugName = "MipMapGenPass/Constants";
     m_ConstantBuffer = m_Device->createBuffer(constantBufferDesc);
 
