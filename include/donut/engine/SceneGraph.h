@@ -554,7 +554,7 @@ namespace donut::engine
         [[nodiscard]] const std::vector<std::shared_ptr<SkinnedMeshInstance>>& GetSkinnedMeshInstances() const { return m_SkinnedMeshInstances; }
         [[nodiscard]] const std::vector<std::shared_ptr<SceneGraphAnimation>>& GetAnimations() const { return m_Animations; }
         [[nodiscard]] const std::vector<std::shared_ptr<SceneCamera>>& GetCameras() const { return m_Cameras; }
-        [[nodiscard]] const std::vector<std::shared_ptr<Light>>& GetLights() const { return m_Lights; }
+        [[nodiscard]] std::vector<std::shared_ptr<Light>>& GetLights()  { return m_Lights; }
         [[nodiscard]] bool HasPendingStructureChanges() const { return m_Root && (m_Root->m_Dirty & SceneGraphNode::DirtyFlags::SubgraphStructure) != 0; }
         [[nodiscard]] bool HasPendingTransformChanges() const { return m_Root && (m_Root->m_Dirty & (SceneGraphNode::DirtyFlags::SubgraphTransforms | SceneGraphNode::DirtyFlags::SubgraphPrevTransforms)) != 0; }
 

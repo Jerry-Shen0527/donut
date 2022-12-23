@@ -138,7 +138,7 @@ void ShadeSurface(LightConstants light, MaterialSample materialSample, float3 su
     {
         return;
     }
-    
+
     o_diffuseRadiance = Lambert(materialSample.shadingNormal, incidentVector)
         * materialSample.diffuseAlbedo
         * irradiance;
