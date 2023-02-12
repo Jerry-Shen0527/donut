@@ -46,8 +46,9 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source
    distribution.
 */
-
+#ifdef _WIN64
 #define VK_USE_PLATFORM_WIN32_KHR
+#endif
 
 #include <string>
 #include <queue>
