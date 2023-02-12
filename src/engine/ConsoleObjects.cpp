@@ -30,6 +30,7 @@
 #include <mutex>
 #include <sstream>
 #include <stdexcept>
+#include <cstring>
 
 using namespace donut::math;
 
