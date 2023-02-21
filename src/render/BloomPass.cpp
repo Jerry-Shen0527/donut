@@ -171,7 +171,7 @@ void BloomPass::Render(
 
         nvrhi::ViewportState viewportState = view->GetViewportState();
         const nvrhi::Rect& scissorRect = viewportState.scissorRects[0];
-        const nvrhi::FramebufferInfoEx& fbinfo = framebuffer->getFramebufferInfo();
+        auto& fbinfo = framebuffer->getFramebufferInfo();
 
         // downscale
         {

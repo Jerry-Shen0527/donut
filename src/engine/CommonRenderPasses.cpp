@@ -170,7 +170,7 @@ void CommonRenderPasses::BlitTexture(nvrhi::ICommandList* commandList, const Bli
     assert(targetFramebufferDesc.colorAttachments[0].valid());
     assert(!targetFramebufferDesc.depthAttachment.valid());
 
-    const nvrhi::FramebufferInfoEx& fbinfo = params.targetFramebuffer->getFramebufferInfo();
+    auto& fbinfo = params.targetFramebuffer->getFramebufferInfo();
     const nvrhi::TextureDesc& sourceDesc = params.sourceTexture->getDesc();
 
     assert(IsSupportedBlitDimension(sourceDesc.dimension));
