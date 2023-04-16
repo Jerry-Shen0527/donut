@@ -23,6 +23,8 @@
 #ifndef VIEW_CB_H
 #define VIEW_CB_H
 
+#ifndef __CUDACC__
+
 struct PlanarViewConstants
 {
     float4x4    matWorldToView;
@@ -48,3 +50,5 @@ struct PlanarViewConstants
 };
 
 #endif // VIEW_CB_H
+
+#endif

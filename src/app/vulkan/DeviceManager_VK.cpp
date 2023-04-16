@@ -47,6 +47,10 @@ freely, subject to the following restrictions:
    distribution.
 */
 
+#ifdef _WIN64
+#define VK_USE_PLATFORM_WIN32_KHR
+#endif
+
 #include <string>
 #include <queue>
 #include <unordered_set>
