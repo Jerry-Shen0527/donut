@@ -94,7 +94,7 @@ namespace donut::engine
         void LoadAnimations(const Json::Value& nodeList);
         void LoadHelpers(const Json::Value& nodeList) const;
         
-        void UpdateMaterial(const std::shared_ptr<Material>& material);
+        virtual void UpdateMaterial(const std::shared_ptr<Material>& material);
         void UpdateGeometry(const std::shared_ptr<MeshInfo>& mesh);
         void UpdateInstance(const std::shared_ptr<MeshInstance>& instance);
 

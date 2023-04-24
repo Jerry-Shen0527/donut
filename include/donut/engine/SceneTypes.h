@@ -207,6 +207,9 @@ namespace donut::engine
         uint32_t totalVertices = 0;
         int globalMeshIndex = 0;
         nvrhi::rt::AccelStructHandle accelStruct; // for use by applications
+#ifdef NVRHI_WITH_OPTIX
+        nvrhi::OptiXTraversableHandle optixAccel;  // for use by applications
+#endif
 
         virtual ~MeshInfo() = default;
     };

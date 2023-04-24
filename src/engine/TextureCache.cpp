@@ -402,6 +402,7 @@ void TextureCache::FinalizeTexture(std::shared_ptr<TextureData> texture, CommonR
         : texture->mipLevels;
     textureDesc.debugName = texture->path;
     textureDesc.isRenderTarget = texture->isRenderTarget;
+    textureDesc.sharedResourceFlags = nvrhi::SharedResourceFlags::Shared;
     texture->texture = m_Device->createTexture(textureDesc);
 
     commandList->beginTrackingTextureState(texture->texture, nvrhi::AllSubresources, nvrhi::ResourceStates::Common);
