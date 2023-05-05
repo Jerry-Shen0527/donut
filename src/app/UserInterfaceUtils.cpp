@@ -253,6 +253,17 @@ bool donut::app::LightEditor_Point(engine::PointLight& light)
     changed |= ImGui::SliderFloat("Radius", &light.radius, 0.01f, 1.f, "%.3f", ImGuiSliderFlags_Logarithmic);
     changed |= ImGui::ColorEdit3("Color", &light.color.x, ImGuiColorEditFlags_Float);
     changed |= ImGui::SliderFloat("Intensity", &light.intensity, 0.f, 100.f, "%.2f", ImGuiSliderFlags_Logarithmic);
+
+    auto d_position = light.GetPosition();
+    float3 position{
+        float(d_position.x),
+        float(d_position.y),
+        float(d_position.z) };
+    if (ImGui::SliderFloat3("LightPos", &position.x, -1, 1))
+    {
+        light.SetPosition(double3(position));
+        changed = true;
+    }
     return changed;
 }
 
