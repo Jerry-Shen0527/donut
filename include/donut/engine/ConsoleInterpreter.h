@@ -78,13 +78,14 @@ namespace donut::engine
 				std::string output;
 			};
 
-			Result Execute(std::string_view const cmdline);
+			virtual Result Execute(std::string_view const cmdline);
 
 			// parse incomplete command line & return auto-completion suggestions
-			std::vector<std::string> Suggest(std::string_view const cmdline, size_t cursor_pos);
+			virtual std::vector<std::string> Suggest(std::string_view const cmdline, size_t cursor_pos);
 
 			bool RegisterCommands(std::shared_ptr<TextureCache> textureCache);
 
+		        virtual ~Interpreter() = default;
 		private:
 
 			std::shared_ptr<TextureCache> m_TextureCache;

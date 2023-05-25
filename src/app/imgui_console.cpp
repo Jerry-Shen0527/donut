@@ -213,7 +213,7 @@ void ImGui_Console::Render(bool* open)
 
 	bool reclaim_focus = false;
 	auto flags = ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_CallbackCompletion | ImGuiInputTextFlags_CallbackHistory;
-	if (ImGui::InputText("", m_InputBuffer.data(), m_InputBuffer.size(), flags, 
+	if (ImGui::InputText("Console", m_InputBuffer.data(), m_InputBuffer.size(), flags, 
 		[](ImGuiInputTextCallbackData* data)
 		{
 			ImGui_Console* console = (ImGui_Console*)data->UserData;

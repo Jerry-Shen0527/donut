@@ -137,12 +137,7 @@ bool ImGui_NVRHI::init(nvrhi::DeviceHandle renderer, std::shared_ptr<ShaderFacto
     };
 
     shaderAttribLayout = renderer->createInputLayout(vertexAttribLayout, sizeof(vertexAttribLayout) / sizeof(vertexAttribLayout[0]), vertexShader);
-
-    // create font texture
-    if (!createFontTexture(m_commandList))
-    {
-        return false;
-    }
+    
 
     // create PSO
     {
@@ -188,7 +183,22 @@ bool ImGui_NVRHI::init(nvrhi::DeviceHandle renderer, std::shared_ptr<ShaderFacto
     }
 
     auto& io = ImGui::GetIO();
-    io.Fonts->AddFontDefault();
+    ImFontConfig config;
+    strcpy(config.Name, "DroidSans.ttf, 13px");
+    io.Fonts->AddFontDefault(&config);
+
+    // create font texture
+    if (!createFontTexture(m_commandList))
+    {
+        return false;
+    }
+
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;  // Enable Multi-Viewport / Platform Windows
+        
+    auto& style = ImGui::GetStyle();
+    style.Colors[ImGuiCol_WindowBg].w *= 0.7;
+    style.Colors[ImGuiCol_MenuBarBg].w *= 0.7f;
 
     m_commandList->close();
     renderer->executeCommandList(m_commandList);
