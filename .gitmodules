@@ -4,7 +4,8 @@
 	branch = cleared
 [submodule "thirdparty/imgui"]
 	path = thirdparty/imgui
-	url = https://github.com/ocornut/imgui
+	url = https://github.com/Jerry-Shen0527/imgui
+	branch = docking
 [submodule "thirdparty/jsoncpp"]
 	path = thirdparty/jsoncpp
 	url = https://github.com/open-source-parsers/jsoncpp
