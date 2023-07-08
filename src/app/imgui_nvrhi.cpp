@@ -184,8 +184,16 @@ bool ImGui_NVRHI::init(nvrhi::DeviceHandle renderer, std::shared_ptr<ShaderFacto
 
     auto& io = ImGui::GetIO();
     ImFontConfig config;
-    strcpy(config.Name, "DroidSans.ttf, 13px");
-    io.Fonts->AddFontDefault(&config);
+    //strcpy(config.Name, "../../data/DroidSans.ttf, 13px");
+    //io.Fonts->AddFontDefault(&config);
+
+    //ImFontConfig config;
+    config.OversampleH = 4;
+    config.OversampleV = 4;
+    config.PixelSnapH = false;
+
+    io.Fonts->AddFontFromFileTTF("../../data/Play-Regular.ttf", 18.0f, &config);
+    //io.Fonts->AddFontFromFileTTF("../../data/Cuprum-Bold.ttf", 20.0f, &config);
 
     // create font texture
     if (!createFontTexture(m_commandList))

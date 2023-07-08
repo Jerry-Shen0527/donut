@@ -217,7 +217,7 @@ void ImGui_Renderer::Animate(float elapsedTimeSeconds)
     GetDeviceManager()->GetDPIScaleInfo(scaleX, scaleY);
 
     ImGuiIO& io = ImGui::GetIO();
-    io.DisplaySize = ImVec2(float(w), float(h));
+    io.DisplaySize = ImVec2(float(w)/scaleX, float(h)/scaleY);
     io.DisplayFramebufferScale.x = scaleX;
     io.DisplayFramebufferScale.y = scaleY;
 
