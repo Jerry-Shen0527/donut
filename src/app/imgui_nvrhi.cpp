@@ -192,7 +192,7 @@ bool ImGui_NVRHI::init(nvrhi::DeviceHandle renderer, std::shared_ptr<ShaderFacto
     config.OversampleV = 4;
     config.PixelSnapH = false;
 
-    io.Fonts->AddFontFromFileTTF("../../data/Play-Regular.ttf", 18.0f, &config);
+    io.Fonts->AddFontFromFileTTF("../../../data/Play-Regular.ttf", 16.0f, &config);
     //io.Fonts->AddFontFromFileTTF("../../data/Cuprum-Bold.ttf", 20.0f, &config);
 
     // create font texture
