@@ -212,7 +212,10 @@ static const struct
     { nvrhi::Format::RGBA32_FLOAT,      32, 32, 32, 32,  0,  0, },
 };
 
-bool DeviceManager::CreateWindowDeviceAndSwapChain(const DeviceCreationParameters& params, const char *windowTitle)
+bool DeviceManager::CreateWindowDeviceAndSwapChain(
+    const DeviceCreationParameters &params,
+    const char *windowTitle,
+    bool showWindow)
 {
 #ifdef _WINDOWS
     if (params.enablePerMonitorDPI)
@@ -318,7 +321,8 @@ bool DeviceManager::CreateWindowDeviceAndSwapChain(const DeviceCreationParameter
     if (!CreateDeviceAndSwapChain())
         return false;
 
-    glfwShowWindow(m_Window);
+    if (showWindow)
+        glfwShowWindow(m_Window);
 
     // reset the back buffer size state to enforce a resize event
     m_DeviceParams.backBufferWidth = 0;
