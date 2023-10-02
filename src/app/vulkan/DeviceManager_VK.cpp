@@ -60,12 +60,14 @@ freely, subject to the following restrictions:
 #include <nvrhi/vulkan.h>
 #include <nvrhi/validation.h>
 
-using namespace donut;
-using namespace donut::app;
+#define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 1
+#include <vulkan/vulkan.hpp>
 
 // Define the Vulkan dynamic dispatcher - this needs to occur in exactly one cpp file in the program.
 VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE
 
+using namespace donut;
+using namespace donut::app;
 
 class DeviceManager_VK : public DeviceManager
 {
@@ -205,7 +207,8 @@ private:
             VK_NV_MESH_SHADER_EXTENSION_NAME,
             VK_KHR_FRAGMENT_SHADING_RATE_EXTENSION_NAME,
             VK_KHR_SYNCHRONIZATION_2_EXTENSION_NAME,
-            VK_KHR_MAINTENANCE_4_EXTENSION_NAME
+            VK_KHR_MAINTENANCE_4_EXTENSION_NAME,
+            VK_KHR_SWAPCHAIN_MUTABLE_FORMAT_EXTENSION_NAME
         },
     };
 
@@ -238,6 +241,7 @@ private:
 
     vk::SurfaceFormatKHR m_SwapChainFormat;
     vk::SwapchainKHR m_SwapChain;
+    bool m_SwapChainMutableFormatSupported = false;
 
     struct SwapChainImage
     {
@@ -418,7 +422,7 @@ bool DeviceManager_VK::createInstance()
 
     if (res != vk::Result::eSuccess)
     {
-        log::error("Call to vkEnumerateInstanceVersion failed, error code = %s", nvrhi::vulkan::resultToString(res));
+        log::error("Call to vkEnumerateInstanceVersion failed, error code = %s", nvrhi::vulkan::resultToString(VkResult(res)));
         return false;
     }
 
@@ -451,7 +455,7 @@ bool DeviceManager_VK::createInstance()
     res = vk::createInstance(&info, nullptr, &m_VulkanInstance);
     if (res != vk::Result::eSuccess)
     {
-        log::error("Failed to create a Vulkan instance, error code = %s", nvrhi::vulkan::resultToString(res));
+        log::error("Failed to create a Vulkan instance, error code = %s", nvrhi::vulkan::resultToString(VkResult(res)));
         return false;
     }
 
@@ -476,7 +480,7 @@ void DeviceManager_VK::installDebugCallback()
 
 bool DeviceManager_VK::pickPhysicalDevice()
 {
-    vk::Format requestedFormat = nvrhi::vulkan::convertFormat(m_DeviceParams.swapChainFormat);
+    VkFormat requestedFormat = nvrhi::vulkan::convertFormat(m_DeviceParams.swapChainFormat);
     vk::Extent2D requestedExtent(m_DeviceParams.backBufferWidth, m_DeviceParams.backBufferHeight);
 
     auto devices = m_VulkanInstance.enumeratePhysicalDevices();
@@ -555,7 +559,7 @@ bool DeviceManager_VK::pickPhysicalDevice()
         bool surfaceFormatPresent = false;
         for (const vk::SurfaceFormatKHR& surfaceFmt : surfaceFmts)
         {
-            if (surfaceFmt.format == requestedFormat)
+            if (surfaceFmt.format == vk::Format(requestedFormat))
             {
                 surfaceFormatPresent = true;
                 break;
@@ -720,6 +724,8 @@ bool DeviceManager_VK::createDevice()
             synchronization2Supported = true;
         else if (ext == VK_KHR_MAINTENANCE_4_EXTENSION_NAME)
             maintenance4Supported = true;
+        else if (ext == VK_KHR_SWAPCHAIN_MUTABLE_FORMAT_EXTENSION_NAME)
+            m_SwapChainMutableFormatSupported = true;
     }
 
 #define APPEND_EXTENSION(condition, desc) if (condition) { (desc).pNext = pNext; pNext = &(desc); }  // NOLINT(cppcoreguidelines-macro-usage)
@@ -824,7 +830,7 @@ bool DeviceManager_VK::createDevice()
     const vk::Result res = m_VulkanPhysicalDevice.createDevice(&deviceDesc, nullptr, &m_VulkanDevice);
     if (res != vk::Result::eSuccess)
     {
-        log::error("Failed to create a Vulkan physical device, error code = %s", nvrhi::vulkan::resultToString(res));
+        log::error("Failed to create a Vulkan physical device, error code = %s", nvrhi::vulkan::resultToString(VkResult(res)));
         return false;
     }
 
@@ -901,6 +907,7 @@ bool DeviceManager_VK::createSwapChain()
                     .setImageArrayLayers(1)
                     .setImageUsage(vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled)
                     .setImageSharingMode(enableSwapChainSharing ? vk::SharingMode::eConcurrent : vk::SharingMode::eExclusive)
+                    .setFlags(m_SwapChainMutableFormatSupported ? vk::SwapchainCreateFlagBitsKHR::eMutableFormat : vk::SwapchainCreateFlagBitsKHR(0))
                     .setQueueFamilyIndexCount(enableSwapChainSharing ? uint32_t(queues.size()) : 0)
                     .setPQueueFamilyIndices(enableSwapChainSharing ? queues.data() : nullptr)
                     .setPreTransform(vk::SurfaceTransformFlagBitsKHR::eIdentity)
@@ -908,11 +915,34 @@ bool DeviceManager_VK::createSwapChain()
                     .setPresentMode(m_DeviceParams.vsyncEnabled ? vk::PresentModeKHR::eFifo : vk::PresentModeKHR::eImmediate)
                     .setClipped(true)
                     .setOldSwapchain(nullptr);
+    
+    std::vector<vk::Format> imageFormats = { m_SwapChainFormat.format };
+    switch(m_SwapChainFormat.format)
+    {
+        case vk::Format::eR8G8B8A8Unorm:
+            imageFormats.push_back(vk::Format::eR8G8B8A8Srgb);
+            break;
+        case vk::Format::eR8G8B8A8Srgb:
+            imageFormats.push_back(vk::Format::eR8G8B8A8Unorm);
+            break;
+        case vk::Format::eB8G8R8A8Unorm:
+            imageFormats.push_back(vk::Format::eB8G8R8A8Srgb);
+            break;
+        case vk::Format::eB8G8R8A8Srgb:
+            imageFormats.push_back(vk::Format::eB8G8R8A8Unorm);
+            break;
+    }
+
+    auto imageFormatListCreateInfo = vk::ImageFormatListCreateInfo()
+        .setViewFormats(imageFormats);
+
+    if (m_SwapChainMutableFormatSupported)
+        desc.pNext = &imageFormatListCreateInfo;
 
     const vk::Result res = m_VulkanDevice.createSwapchainKHR(&desc, nullptr, &m_SwapChain);
     if (res != vk::Result::eSuccess)
     {
-        log::error("Failed to create a Vulkan swap chain, error code = %s", nvrhi::vulkan::resultToString(res));
+        log::error("Failed to create a Vulkan swap chain, error code = %s", nvrhi::vulkan::resultToString(VkResult(res)));
         return false;
     }
 

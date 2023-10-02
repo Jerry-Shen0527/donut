@@ -55,6 +55,10 @@ option(DONUT_WITH_UNIT_TESTS "Donut unit-tests (see CMake/CTest documentation)" 
 add_subdirectory(thirdparty)
 
 if (NOT TARGET ShaderMake)
+    option(SHADERMAKE_FIND_FXC "" "${DONUT_WITH_DX11}")
+    option(SHADERMAKE_FIND_DXC "" "${DONUT_WITH_DX12}")
+    option(SHADERMAKE_FIND_DXC_SPIRV "" "${DONUT_WITH_VULKAN}")
+
     add_subdirectory(ShaderMake)
 endif()
 
@@ -62,7 +66,6 @@ if (DONUT_WITH_NVRHI)
     set(NVRHI_WITH_DX11 "${DONUT_WITH_DX11}" CACHE BOOL "" FORCE)
     set(NVRHI_WITH_DX12 "${DONUT_WITH_DX12}" CACHE BOOL "" FORCE)
     set(NVRHI_WITH_VULKAN "${DONUT_WITH_VULKAN}" CACHE BOOL "" FORCE)
-    option(NVRHI_WITH_SHADER_COMPILER "" OFF)
 
     add_subdirectory(nvrhi)
 
