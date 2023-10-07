@@ -398,11 +398,13 @@ void DeviceManager::Animate(double elapsedTime)
     }
 }
 
-void DeviceManager::Render()
+void DeviceManager::Render(nvrhi::IFramebuffer* framebuffer)
 {
-    BeginFrame();
-    
-    nvrhi::IFramebuffer* framebuffer = m_SwapChainFramebuffers[GetCurrentBackBufferIndex()];
+    if (!framebuffer)
+    {
+        BeginFrame();
+        framebuffer = m_SwapChainFramebuffers[GetCurrentBackBufferIndex()];
+    }
 
     for (auto it : m_vRenderPasses)
     {
@@ -482,11 +484,12 @@ const DeviceCreationParameters& DeviceManager::GetDeviceParams()
     return m_DeviceParams;
 }
 
-void DeviceManager::UpdateWindowSize()
+void DeviceManager::UpdateWindowSize(int width, int height)
 {
-    int width;
-    int height;
-    glfwGetWindowSize(m_Window, &width, &height);
+    if (width == 0 || height == 0)
+    {
+        glfwGetWindowSize(m_Window, &width, &height);
+    }
 
     if (width == 0 || height == 0)
     {

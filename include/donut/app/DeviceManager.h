@@ -173,6 +173,11 @@ namespace donut::app
             x = m_DPIScaleFactorX;
             y = m_DPIScaleFactorY;
         }
+        void SetDPIScaleInfo(float x, float y) 
+        {
+            m_DPIScaleFactorX = x;
+            m_DPIScaleFactorY = y;
+        }
 
     protected:
         bool m_windowVisible = false;
@@ -201,13 +206,9 @@ namespace donut::app
 
         DeviceManager() = default;
 
-        void UpdateWindowSize();
-
         void BackBufferResizing();
         void BackBufferResized();
 
-        void Animate(double elapsedTime);
-        void Render();
         void UpdateAverageFrameTime(double elapsedTime);
         void AnimateRenderPresent();
         // device-specific methods
@@ -215,7 +216,12 @@ namespace donut::app
         virtual void DestroyDeviceAndSwapChain() = 0;
         virtual void ResizeSwapChain() = 0;
         virtual void BeginFrame() = 0;
+
+    public:
+        void Animate(double elapsedTime);
+        void Render(nvrhi::IFramebuffer* framebuffer = nullptr);
         virtual void Present() = 0;
+        void UpdateWindowSize(int width = 0, int height = 0);
 
     public:
         [[nodiscard]] virtual nvrhi::IDevice *GetDevice() const = 0;
