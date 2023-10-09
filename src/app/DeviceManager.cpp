@@ -214,8 +214,7 @@ static const struct
 
 bool DeviceManager::CreateWindowDeviceAndSwapChain(
     const DeviceCreationParameters &params,
-    const char *windowTitle,
-    bool showWindow)
+    const char *windowTitle)
 {
 #ifdef _WINDOWS
     if (params.enablePerMonitorDPI)
@@ -321,8 +320,7 @@ bool DeviceManager::CreateWindowDeviceAndSwapChain(
     if (!CreateDeviceAndSwapChain())
         return false;
 
-    if (showWindow)
-        glfwShowWindow(m_Window);
+    glfwShowWindow(m_Window);
 
     // reset the back buffer size state to enforce a resize event
     m_DeviceParams.backBufferWidth = 0;

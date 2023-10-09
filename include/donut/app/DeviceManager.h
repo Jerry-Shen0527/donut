@@ -157,7 +157,7 @@ namespace donut::app
     public:
         static DeviceManager* Create(nvrhi::GraphicsAPI api);
 
-        bool CreateWindowDeviceAndSwapChain(const DeviceCreationParameters& params, const char *windowTitle, bool showWindow = true);
+        virtual bool CreateWindowDeviceAndSwapChain(const DeviceCreationParameters& params, const char *windowTitle);
 
         void AddRenderPassToFront(IRenderPass *pController);
         void AddRenderPassToBack(IRenderPass *pController);
