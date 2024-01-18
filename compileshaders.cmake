@@ -73,7 +73,7 @@ function(donut_compile_shaders)
            -I ${DONUT_SHADER_INCLUDE_DIR}
            --compiler "${DXC_PATH}"
            --outputExt .bin
-           --shaderModel 6_5
+           --shaderModel 6_6
            ${useApiArgument})
 
         separate_arguments(params_COMPILER_OPTIONS_DXIL NATIVE_COMMAND "${params_COMPILER_OPTIONS_DXIL}")
@@ -159,11 +159,11 @@ function(donut_compile_shaders_all_platforms)
     donut_compile_shaders(TARGET ${params_TARGET}
                           CONFIG ${params_CONFIG}
                           FOLDER ${params_FOLDER}
-                          DXBC ${params_OUTPUT_BASE}/dxbc
+                          # DXBC ${params_OUTPUT_BASE}/dxbc
                           DXIL ${params_OUTPUT_BASE}/dxil
                           SPIRV_DXC ${params_OUTPUT_BASE}/spirv
                           COMPILER_OPTIONS_DXIL ${params_COMPILER_OPTIONS_DXIL}
-                          COMPILER_OPTIONS_DXBC ${params_COMPILER_OPTIONS_DXBC}
+                          # COMPILER_OPTIONS_DXBC ${params_COMPILER_OPTIONS_DXBC}
                           COMPILER_OPTIONS_SPIRV ${params_COMPILER_OPTIONS_SPIRV}
                           SOURCES ${params_SOURCES})
 
